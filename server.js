@@ -1,7 +1,7 @@
 // Importing node modules
 import express from 'express';
 // Importing source files
-import routes from './routes/main.routes';
+import routes from './src/routes';
 // consts
 const app = express();
 
