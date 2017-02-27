@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require babel-polyfill --require chai --compilers js:babel-register tests --recursive",
-    "build": "node_modules/babel/bin/babel.js src --source-maps --out-dir dist",
+    "build": "babel server.js --source-maps --out-dir dist && babel src --source-maps --out-dir dist/src",
     "start": "nodemon --exec babel-node server.js"
   },
   "author": "",
