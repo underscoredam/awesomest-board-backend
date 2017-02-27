@@ -8,8 +8,8 @@
     "build": "babel server.js --source-maps --out-dir dist && babel src --source-maps --out-dir dist/src",
     "start": "nodemon --exec babel-node server.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Damodar Dahal",
+  "license": "MIT",
   "dependencies": {
     "express": "4.13.3"
   },
