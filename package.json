@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/**/*.js",
+    "test": "mocha --require babel-polyfill --compilers js:babel-register tests/Main.js",
     "build": "node_modules/babel/bin/babel.js src --source-maps --out-dir dist",
     "start": "nodemon -- node_modules/babel/bin/babel-node.js server.js"
   },
@@ -15,6 +15,9 @@
   },
   "devDependencies": {
     "babel": "5.8.29",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.1.10",
+    "babel-register": "^6.23.0",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "nodemon": "1.8.0"

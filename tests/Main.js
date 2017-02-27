@@ -1,6 +1,5 @@
-var chai = require("chai");
+import {expect} from 'chai';
 
 it("Should run", () => {
-    chai.expect(1).to.equal(1);
-
+    expect(1).to.equal(1);
 });
