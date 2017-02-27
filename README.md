@@ -4,6 +4,9 @@
 
 
 ```bash
+# pre-setup
+npm install -g babel-cli nodemon mocha
+
 # setup
 git clone https://github.com/underscoredam/awesomest-board-backend
 cd awesomest-board-backend
