@@ -10,7 +10,7 @@ describe("utils/random.js", ()=>{
     });
 
     it("session tokens are uuids", () => {
-        uuid_validate(generateSessionToken());
+        expect(uuid_validate(generateSessionToken())).to.equal(true);
     });
 
 });
