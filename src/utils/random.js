@@ -39,3 +39,5 @@ export const generateToken = () => {
  * Generate a session token
  */
 export const generateSessionToken = generateUuid;
+
+export const generateBoardId = generateUuid;
