@@ -1,71 +1,146 @@
-// Import node module
 import express from 'express';
 const router = express.Router();
 import cors from 'cors';
+import bodyParser from 'body-parser'
+import * as members from './members'
+import {generateBoardId, generateToken} from './utils/random'
 
 router.all('*', cors());
+router.use(bodyParser.json());
 
-// Arrow functions
+let boardId = null;
+const validTokens = [];
+
 router.get('/', (req, res) => {
     res.send({code: 0});
 });
 
-router.get('/create', function  (req, res){
-    let thereIsServer = false;
+router.get('/create', (req, res) => {
+    let thereIsServer = !!boardId;
 
-    if(thereIsServer){
+    if (thereIsServer) {
         res.status(400);
-        res.send({"code": 1, "message": "Server already started"});
-    }else{
         res.send({
-            "code": 0,
-            "board_id": "c242103e-f2c0-4729-a0f7-8c6d4780b70a",
-            "sess_token": "sdlfjkSDKLFJdfkljFDSLKJdfskljLKFDJ",
-            "user_id": 0
+            code: 1,
+            message: 'Server already started'
+        });
+    } else {
+        boardId = generateBoardId();
+        const admin = members.addMember(true);
+
+        res.send({
+            code: 0,
+            board_id: boardId,
+            sess_token: admin.token,
+            user_id: admin.id,
+            name: admin.name
         });
     }
 });
 
-router.get('/check', function (req, res){
-    res.send({"code": 0, "board_id": "c242103e-f2c0-4729-a0f7-8c6d4780b70a", "members_count": 5})
+router.get('/check', (req, res) => {
+    res.send({
+        code: 0,
+        running: !!boardId,
+        board_id: boardId,
+        members_count: members.getMembersCount()
+    });
 });
 
-router.post('/connect', function (req, res){
-    let isTokenValid = true;
+router.post('/createCode', (req, res) => {
+    const sess_token = req.body.sess_token;
 
-    if(isTokenValid){
-        res.send({"code": 0, "user_id":10, "sess_token": "sdakfKLASFJdsaafkjSDFLKJfdsjFDKLSJ"})
-    }else{
+    const member = members.getMemberByToken(sess_token);
+
+    if (!member || !member.admin) {
+        res.status(403);
+        res.send({
+            code: 1,
+            message: 'You don\'t have admin access. -_-'
+        });
+    } else {
+        const token = generateToken();
+        validTokens.push(token);
+        res.send({
+            code: 0,
+            token: token
+        });
+    }
+
+
+});
+
+router.post('/connect', (req, res) => {
+    const token = req.body.token;
+
+    let isTokenValid = validTokens.indexOf(token) >= 0;
+
+    if (isTokenValid) {
+        validTokens.splice(validTokens.indexOf(token), 1);
+
+        const member = members.addMember();
+
+        res.send({
+            code: 0,
+            user_id: member.id,
+            sess_token: member.token,
+            name: member.name
+        })
+    } else {
         res.status(406);
-        res.send({"code": 1, "message": "Invalid token"})
+        res.send({
+            code: 1,
+            message: 'Invalid token'
+        });
     }
 
 });
 
-router.get('/kill', function (req, res){
-    let memberAdmin = true;
+router.get('/kill', (req, res) => {
+    const token = res.body.token;
 
-    if(memberAdmin){
+    const member = members.getMemberByToken(token);
+
+    if (member.admin) {
+        //admin can not remove himself/herself
+
         res.status(403);
-        res.send({"code":1, "message": "You don't have permission to do that :]."})
+        res.send({
+            code: 1,
+            message: 'You don\'t have permission to do that :].'
+        });
 
-    }else{
-        res.send({"code": 0})
+    } else {
+        // TODO create a socket request
+
+        res.send({
+            'code': 0
+        });
     }
 });
 
-router.get('/kill/:userId', function (req, res){
+router.get('/kill/:userId', (req, res) => {
     const userId = req.params.userId;
-    let memberAdmin = true;
+    const token = res.body.token;
+    const member = members.getMemberByToken(token);
 
-    if(memberAdmin){
-        res.send({"code": 0})
-    }else{
+
+    if (!member.admin) {
+        // only admin can remove other members
+
+        // TODO create a socket request
+
+        res.send({
+            code: 0
+        });
+    } else {
         res.status(403);
-        res.send({"code":1, "message": "You don't have permissions to do that :]."})
+        res.send({
+            code: 1,
+            message: 'You don\'t have permissions to do that :].'
+        });
     }
 });
 
 
-// Exporting an object as the default import for this module
 export default router;
