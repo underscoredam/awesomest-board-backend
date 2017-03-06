@@ -16,7 +16,8 @@ export function addMember(admin=false, token=generateSessionToken()){
     const data = {
         token,
         id,
-        admin
+        admin,
+        socket:null
     };
 
     if(admin && membersList.some((x) => x.admin)){
@@ -26,6 +27,8 @@ export function addMember(admin=false, token=generateSessionToken()){
     id++;
 
     membersList.push(data);
+
+    return data;
 }
 
 
