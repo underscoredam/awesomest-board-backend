@@ -1,6 +1,9 @@
 // Import node module
 import express from 'express';
 const router = express.Router();
+import cors from 'cors';
+
+router.all('*', cors());
 
 // Arrow functions
 router.get('/', (req, res) => {
