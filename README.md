@@ -1,4 +1,4 @@
-# Awesomest-board backend
+# Awesomest-board backend [![Build Status](https://travis-ci.org/underscoredam/awesomest-board-backend.svg?branch=master)](https://travis-ci.org/underscoredam/awesomest-board-backend)
 
 > The backend for the [awesomest-board project](https://github.com/underscoredam/awesomest-board).
 
