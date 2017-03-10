@@ -69,3 +69,7 @@ export function clearAll() {
     id=0;
     membersList.splice(0, membersList.length);
 }
+
+export function getAllMembers(){
+    return membersList;
+}

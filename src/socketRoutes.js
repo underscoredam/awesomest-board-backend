@@ -1,26 +1,124 @@
 import {listen} from 'socket.io'
+import {getMemberByToken, getAllMembers, deleteMember, getMembersCount} from './members'
 
 function registerEvents(socket){
 
+    const getDataAndMember = (request) =>{
+        const token = request.sess_token;
+        const member = getMemberByToken(token);
+
+        const data = request.data;
+
+        return {
+            "member": member,
+            "data": data
+        }
+    };
+
+    const raiseError = () => {
+        socket.send("Invalid token!");
+    };
     /**
      * Needs to tell everyone on the server that the person has connected;
      */
-    socket.on('HILO', function(data){
-        console.log('socket said hilo', data);
+    socket.on('HILO', function(request){
+        const { data , member } = getDataAndMember(request);
+
+        if(member == null){
+            return raiseError();
+        }
+        member.socket = socket;
+
+        getAllMembers().forEach((loopMember) => {
+            if (loopMember != member){
+                member.socket.emit('HILO', {
+                    'id': member.id,
+                    'admin': member.admin,
+                    'name': member.name
+                });
+            }
+        });
+
     });
 
     /**
-     * Need to find a way to prompt user to enter name;
+     * Setting name for user
      */
-    socket.on('SET_NAME', function(){
+    socket.on('SET_NAME', function(request){
         console.log('Setting name...');
+        const { data , member } = getDataAndMember(request);
+
+        if(member == null){
+            return raiseError();
+        }
+        getAllMembers().forEach((loopMember) => {
+            if (loopMember != member){
+                member.socket.emit('SET_NAME', {
+                    'id': member.id,
+                    'name': member.name
+                });
+            }
+        });
 
     });
 
-    socket.on('KILL', function(){
-        console.log('Kicking user...')
+    socket.on('KILL', function(request) {
+        console.log('Kicking user...', request);
+        const {data, member} = getDataAndMember(request);
+
+        if (member == null) {
+            return raiseError();
+        }
+
+        if (member.id == 0) {
+            deleteMember(request);
+            getAllMembers().forEach((loopMember) => {
+                if (true || loopMember != member) {
+                    member.socket.emit('KILL', {
+                        'id': request.data
+                    });
+                }
+            });
+        }
+        else {
+            throw new Error ('Only the admin can kick others');
+        }
     });
 
+    socket.on('DRAW_EVENT', function(request) {
+        console.log('Starting DRAW_EVENT');
+        const { data , member } = getDataAndMember(request);
+
+        if (member == null) {
+            return raiseError();
+        }
+        getAllMembers().forEach((loopMember) => {
+            if (loopMember != member) {
+                member.socket.emit('DRAW_EVENT', {
+                    'data': request.data
+                });
+            }
+        });
+    });
+
+    //The follow would list the members of the server to whomever request it
+    /*socket.on('LIST_MEMBERS', function(request) {
+        console.log('Starting LIST_MEMBERS');
+        const { data , member } = getDataAndMember(request);
+        const membersCount = getMembersCount();
+        const membersList = getAllMembers();
+
+        if (member == null)  {
+            return raiseError();
+        }
+
+        while(i = 0, i < membersCount, i++) {
+            member.socket.emit('LIST_MEMBERS', {
+                membersList
+            });
+        }
+
+    });*/
 }
 
 export const activate = function(server){
