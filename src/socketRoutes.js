@@ -41,7 +41,6 @@ function registerEvents(socket){
         }
         member.socket = socket;
 
-        console.log("Somebody said hilo", member);
         getAllMembers().forEach((loopMember) => {
             if (loopMember != member && loopMember.socket){
                 console.log("Sending to loopmember", loopMember);
@@ -65,9 +64,11 @@ function registerEvents(socket){
         if(member == null){
             return raiseError();
         }
+
+        member.name = data.name;
         getAllMembers().forEach((loopMember) => {
-            if (loopMember != member){
-                member.socket.emit('SET_NAME', {
+            if (loopMember != member && loopMember.socket){
+                loopMember.socket.emit('SET_NAME', {
                     'id': member.id,
                     'name': member.name
                 });
