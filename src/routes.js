@@ -97,8 +97,8 @@ router.post('/connect', (req, res) => {
 
 });
 
-router.get('/kill', (req, res) => {
-    const token = res.body.token;
+router.post('/kill', (req, res) => {
+    const token = req.body.sess_token;
 
     const member = members.getMemberByToken(token);
 
@@ -121,13 +121,13 @@ router.get('/kill', (req, res) => {
     }
 });
 
-router.get('/kill/:userId', (req, res) => {
+router.post('/kill/:userId', (req, res) => {
     const userId = req.params.userId;
-    const token = res.body.token;
+    const token = req.body.sess_token;
     const member = members.getMemberByToken(token);
 
 
-    if (!member.admin) {
+    if (member.admin) {
         // only admin can remove other members
 
         killMember(userId);
