@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser'
 import * as members from './members'
 import {generateBoardId, generateToken} from './utils/random'
+import {killMember} from './socketRoutes'
 
 router.all('*', cors());
 router.use(bodyParser.json());
@@ -111,7 +112,8 @@ router.get('/kill', (req, res) => {
         });
 
     } else {
-        // TODO create a socket request
+        killMember(member.id);
+        members.deleteMember(member.id);
 
         res.send({
             'code': 0
@@ -128,7 +130,8 @@ router.get('/kill/:userId', (req, res) => {
     if (!member.admin) {
         // only admin can remove other members
 
-        // TODO create a socket request
+        killMember(userId);
+        members.deleteMember(userId);
 
         res.send({
             code: 0

@@ -1,6 +1,18 @@
 import {listen} from 'socket.io'
 import {getMemberByToken, getAllMembers, deleteMember, getMembersCount} from './members'
 
+export const killMember = (id) => {
+    const members = getAllMembers();
+
+    members.forEach(member => {
+        if(member.socket){
+            member.socket.emit('KILL', {
+                id: id
+            })
+        }
+    })
+};
+
 function registerEvents(socket){
 
     const getDataAndMember = (request) =>{
@@ -29,9 +41,11 @@ function registerEvents(socket){
         }
         member.socket = socket;
 
+        console.log("Somebody said hilo", member);
         getAllMembers().forEach((loopMember) => {
-            if (loopMember != member){
-                member.socket.emit('HILO', {
+            if (loopMember != member && loopMember.socket){
+                console.log("Sending to loopmember", loopMember);
+                loopMember.socket.emit('HILO', {
                     'id': member.id,
                     'admin': member.admin,
                     'name': member.name
@@ -70,7 +84,7 @@ function registerEvents(socket){
             return raiseError();
         }
 
-        if (member.id == 0) {
+        if (member.admin) {
             deleteMember(request);
             getAllMembers().forEach((loopMember) => {
                 if (true || loopMember != member) {
@@ -93,8 +107,8 @@ function registerEvents(socket){
             return raiseError();
         }
         getAllMembers().forEach((loopMember) => {
-            if (loopMember != member) {
-                member.socket.emit('DRAW_EVENT', {
+            if (loopMember != member && loopMember.socket) {
+                loopMember.socket.emit('DRAW_EVENT', {
                     'data': request.data
                 });
             }
