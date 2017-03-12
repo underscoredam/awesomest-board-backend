@@ -42,7 +42,7 @@ export function addMember(admin=false, token=generateSessionToken()){
  */
 export function deleteMember(id){
 
-    const memberIndex = membersList.findIndex((x) => x.id === id);
+    const memberIndex = membersList.findIndex((x) => x.id == id);
 
     if(membersList[memberIndex].admin)
         throw new Error("Can not delete admin");
