@@ -43,7 +43,6 @@ function registerEvents(socket){
 
         getAllMembers().forEach((loopMember) => {
             if (loopMember != member && loopMember.socket){
-                console.log("Sending to loopmember", loopMember);
                 loopMember.socket.emit('HILO', {
                     'id': member.id,
                     'admin': member.admin,
@@ -58,7 +57,6 @@ function registerEvents(socket){
      * Setting name for user
      */
     socket.on('SET_NAME', function(request){
-        console.log('Setting name...');
         const { data , member } = getDataAndMember(request);
 
         if(member == null){
@@ -78,7 +76,6 @@ function registerEvents(socket){
     });
 
     socket.on('KILL', function(request) {
-        console.log('Kicking user...', request);
         const {data, member} = getDataAndMember(request);
 
         if (member == null) {
@@ -86,7 +83,6 @@ function registerEvents(socket){
         }
 
         if (member.admin) {
-            deleteMember(request);
             getAllMembers().forEach((loopMember) => {
                 if (true || loopMember != member) {
                     member.socket.emit('KILL', {
@@ -101,7 +97,6 @@ function registerEvents(socket){
     });
 
     socket.on('DRAW_EVENT', function(request) {
-        console.log('Starting DRAW_EVENT');
         const { data , member } = getDataAndMember(request);
 
         if (member == null) {
