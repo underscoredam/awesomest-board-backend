@@ -85,7 +85,12 @@ router.post('/connect', (req, res) => {
             code: 0,
             user_id: member.id,
             sess_token: member.token,
-            name: member.name
+            name: member.name,
+            members: members.getAllMembers().map(x => ({
+                name: x.name,
+                id: x.id,
+                admin: x.admin
+            }))
         })
     } else {
         res.status(406);
@@ -144,6 +149,5 @@ router.get('/kill/:userId', (req, res) => {
         });
     }
 });
-
 
 export default router;
