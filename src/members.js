@@ -17,6 +17,7 @@ export function addMember(admin=false, token=generateSessionToken()){
         token,
         id,
         admin,
+        name:'',
         socket:null
     };
 
