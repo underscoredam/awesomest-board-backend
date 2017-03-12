@@ -127,7 +127,7 @@ router.post('/kill', (req, res) => {
 });
 
 router.post('/kill/:userId', (req, res) => {
-    const userId = req.params.userId;
+    const userId = parseInt(req.params.userId);
     const token = req.body.sess_token;
     const member = members.getMemberByToken(token);
 
