@@ -74,8 +74,7 @@ router.post('/createCode', (req, res) => {
 router.post('/connect', (req, res) => {
     const token = req.body.token;
 
-    let isTokenValid = validTokens.indexOf(token) >= 0;
-
+    const isTokenValid = validTokens.some(x => x==token);
     if (isTokenValid) {
         validTokens.splice(validTokens.indexOf(token), 1);
 
