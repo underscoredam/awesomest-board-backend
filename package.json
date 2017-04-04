@@ -11,13 +11,15 @@
   "author": "Damodar Dahal",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.13.3",
+    "body-parser": "^1.17.0",
+    "cors": "^2.8.1",
+    "express": "4.13.3",
+    "http": "0.0.0",
     "socket.io": "^1.7.3"
   },
   "devDependencies": {
     "babel": "5.8.29",
     "babel-cli": "^6.23.0",
-    "babel-core": "^6.23.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-latest": "^6.22.0",
     "babel-register": "^6.23.0",

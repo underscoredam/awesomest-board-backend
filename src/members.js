@@ -16,7 +16,9 @@ export function addMember(admin=false, token=generateSessionToken()){
     const data = {
         token,
         id,
-        admin
+        admin,
+        name:'',
+        socket:null
     };
 
     if(admin && membersList.some((x) => x.admin)){
@@ -26,6 +28,8 @@ export function addMember(admin=false, token=generateSessionToken()){
     id++;
 
     membersList.push(data);
+
+    return data;
 }
 
 
@@ -39,7 +43,7 @@ export function addMember(admin=false, token=generateSessionToken()){
  */
 export function deleteMember(id){
 
-    const memberIndex = membersList.findIndex((x) => x.id === id);
+    const memberIndex = membersList.findIndex((x) => x.id == id);
 
     if(membersList[memberIndex].admin)
         throw new Error("Can not delete admin");
@@ -65,4 +69,8 @@ export function getMembersCount(){
 export function clearAll() {
     id=0;
     membersList.splice(0, membersList.length);
+}
+
+export function getAllMembers(){
+    return membersList;
 }
