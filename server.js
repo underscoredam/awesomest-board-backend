@@ -8,8 +8,8 @@ const server = createServer(app);
 activate(server);
 app.use('/', routes);
 
-server.listen(8000, () => {
+server.listen(3000, () => {
     const {address, port} = server.address();
 
-    console.log(`Server listening at http://${address}:${port}`);
+    console.log(`Server listening at http://${address}${port}`);
 });

@@ -53,9 +53,6 @@ function registerEvents(socket){
 
     });
 
-    /**
-     * Setting name for user
-     */
     socket.on('SET_NAME', function(request){
         const { data , member } = getDataAndMember(request);
 
@@ -96,6 +93,27 @@ function registerEvents(socket){
         }
     });
 
+    //emits CLEAR_BOARD to everyone on server
+    socket.on('CLEAR_BOARD', function (request) {
+        console.log("Hello from CLEAR_BOARD serverside");
+        const {data, member} = getDataAndMember(request);
+        member.socket = socket;
+
+        if (member !== member.admin) {
+                return raiseError();
+            }
+
+        if (member.admin) {
+            getAllMembers().forEach((loopMember) => {
+                if (loopMember != member && loopMember.socket) {
+                    loopMember.socket.emit('CLEAR_BOARD', {
+                        'data': request.data
+                    });
+                }
+            });
+        }
+    });
+
     socket.on('DRAW_EVENT', function(request) {
         const { data , member } = getDataAndMember(request);
 
@@ -110,6 +128,8 @@ function registerEvents(socket){
             }
         });
     });
+
+
 
     //The follow would list the members of the server to whomever request it
     /*socket.on('LIST_MEMBERS', function(request) {
