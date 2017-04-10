@@ -36,7 +36,7 @@ function registerEvents(socket){
     socket.on('HILO', function(request){
         const { data , member } = getDataAndMember(request);
 
-        if(member == null){
+        if(!member){
             return raiseError();
         }
         member.socket = socket;
@@ -99,19 +99,19 @@ function registerEvents(socket){
         const {data, member} = getDataAndMember(request);
         member.socket = socket;
 
-        if (member !== member.admin) {
+        if (!member.admin) {
                 return raiseError();
             }
 
-        if (member.admin) {
-            getAllMembers().forEach((loopMember) => {
-                if (loopMember != member && loopMember.socket) {
+        getAllMembers().forEach((loopMember) => {
+                if (loopMember.id !== member.id && loopMember.socket) {
+
                     loopMember.socket.emit('CLEAR_BOARD', {
                         'data': request.data
                     });
+
                 }
             });
-        }
     });
 
     socket.on('DRAW_EVENT', function(request) {
