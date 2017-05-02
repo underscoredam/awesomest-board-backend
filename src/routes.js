@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 import * as members from './members'
 import {generateBoardId, generateToken} from './utils/random'
 import {killMember} from './socketRoutes'
+import os from 'os';
 
 router.all('*', cors());
 router.use(bodyParser.json());
@@ -98,6 +99,26 @@ router.post('/connect', (req, res) => {
             message: 'Invalid token'
         });
     }
+
+});
+
+router.get('/ips', (req, res) => {
+    let ips = [];
+
+
+    const ifaces = os.networkInterfaces();
+    Object.keys(ifaces).forEach(key => {
+        ips = ips.concat(ifaces[key].filter(x => x.family == "IPv4").map(x => x.address));
+    });
+
+    const localIpIndex = ips.indexOf("127.0.0.1");
+    if(localIpIndex >= 0)ips.splice(localIpIndex, 1);
+
+    const response = {
+        code: 0,
+        ips: ips,
+    };
+    res.send(response);
 
 });
 
