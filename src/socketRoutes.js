@@ -1,6 +1,8 @@
 import {listen} from 'socket.io'
 import {getMemberByToken, getAllMembers, deleteMember, getMembersCount} from './members'
 
+let allDrawEvents = [];
+
 export const killMember = (id) => {
     const members = getAllMembers();
 
@@ -46,6 +48,11 @@ function registerEvents(socket){
                     'admin': member.admin,
                     'name': member.name
                 });
+            }else if(loopMember.socket && loopMember.id == member.id){
+                loopMember.socket.emit('ALL_DATA', {
+                    data: allDrawEvents
+                });
+
             }
         });
 
@@ -99,6 +106,7 @@ function registerEvents(socket){
                 return raiseError();
             }
 
+        allDrawEvents = [];
         getAllMembers().forEach((loopMember) => {
                 if (loopMember.id !== member.id && loopMember.socket) {
 
@@ -116,6 +124,7 @@ function registerEvents(socket){
         if (member == null) {
             return raiseError();
         }
+        allDrawEvents.push(request.data);
         getAllMembers().forEach((loopMember) => {
             if (loopMember != member && loopMember.socket) {
                 loopMember.socket.emit('DRAW_EVENT', {
