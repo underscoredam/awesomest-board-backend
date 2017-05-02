@@ -8,6 +8,13 @@ const server = createServer(app);
 activate(server);
 app.use('/', routes);
 
+
+server.once('error', function(err) {
+    if (err.code === 'EADDRINUSE') {
+        console.log('Not starting backend because EADDRINUSE');
+    }
+});
+
 server.listen(34576, () => {
     const {address, port} = server.address();
 
