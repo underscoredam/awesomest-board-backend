@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --require babel-polyfill --require chai --compilers js:babel-register tests --recursive",
     "build": "babel server.js --source-maps --out-dir dist && babel src --source-maps --out-dir dist/src",
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node server.js",
+    "postinstall": "npm run build"
   },
   "author": "Damodar Dahal",
   "license": "MIT",
