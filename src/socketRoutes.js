@@ -30,9 +30,7 @@ function registerEvents(socket){
     const raiseError = () => {
         socket.send("Invalid token!");
     };
-    /**
-     * Needs to tell everyone on the server that the person has connected;
-     */
+
     socket.on('HILO', function(request){
         const { data , member } = getDataAndMember(request);
 
@@ -93,9 +91,7 @@ function registerEvents(socket){
         }
     });
 
-    //emits CLEAR_BOARD to everyone on server
     socket.on('CLEAR_BOARD', function (request) {
-        console.log("Hello from CLEAR_BOARD serverside");
         const {data, member} = getDataAndMember(request);
         member.socket = socket;
 
@@ -129,26 +125,6 @@ function registerEvents(socket){
         });
     });
 
-
-
-    //The follow would list the members of the server to whomever request it
-    /*socket.on('LIST_MEMBERS', function(request) {
-        console.log('Starting LIST_MEMBERS');
-        const { data , member } = getDataAndMember(request);
-        const membersCount = getMembersCount();
-        const membersList = getAllMembers();
-
-        if (member == null)  {
-            return raiseError();
-        }
-
-        while(i = 0, i < membersCount, i++) {
-            member.socket.emit('LIST_MEMBERS', {
-                membersList
-            });
-        }
-
-    });*/
 }
 
 export const activate = function(server){
